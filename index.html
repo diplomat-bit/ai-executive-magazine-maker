@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Executive Lookbook AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Cinzel for headings (Luxury), Lato for body (Clean) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        /* Magazine aspect ratio */
+        --page-height: min(85vh, 800px);
+        --page-width: calc(var(--page-height) * 0.70); /* Slightly wider than comic */
+      }
+
+      /* Luxury Dark Background */
+      body {
+        min-height: 100vh;
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        background-color: #050505;
+        color: #ffffff;
+      }
+
+      /* Subtle marble/noise texture */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .font-luxury { font-family: 'Cinzel', serif; }
+      .font-body { font-family: 'Lato', sans-serif; }
+
+      /* --- 3D Book Mechanics --- */
+      .lookbook-scene {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 0;
+        perspective: 3000px;
+        min-width: 100vw;
+        overflow-x: hidden;
+      }
+
+      .book {
+        position: relative;
+        width: var(--page-width);
+        height: var(--page-height);
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      
+      .book.opened {
+          transform: translateX(25%); 
+      }
+      @media (min-width: 1000px) {
+          .book.opened { transform: translateX(calc(var(--page-width) / 2)); }
+      }
+
+      .paper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform-origin: left center;
+        transform-style: preserve-3d;
+        transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+        cursor: pointer;
+        background: #111;
+      }
+
+      .paper.flipped {
+        transform: rotateY(-180deg);
+      }
+
+      .front, .back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        overflow: hidden;
+        background-color: #000;
+      }
+
+      .front {
+         border-right: 1px solid #222;
+      }
+      
+      .back {
+        transform: rotateY(180deg);
+        border-left: 1px solid #222;
+      }
+
+      /* Gloss finish */
+      .gloss {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+        pointer-events: none; 
+        z-index: 30;
+      }
+
+      .panel-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: #000;
+        position: relative;
+      }
+
+      .panel-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .luxury-btn {
+        font-family: 'Cinzel', serif;
+        letter-spacing: 2px;
+        border: 1px solid rgba(255,255,255,0.3);
+        background: rgba(0,0,0,0.6);
+        color: white;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+      }
+      .luxury-btn:hover:not(:disabled) {
+        background: white;
+        color: black;
+        border-color: white;
+      }
+      .luxury-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 768px) {
+        :root { 
+             --page-height: min(75vh, 120vw);
+             --page-width: calc(var(--page-height) * 0.70);
+        }
+        .lookbook-scene { 
+             perspective: 1500px; 
+             height: auto; 
+        }
+        .book.opened { transform: translateX(100%); }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "jspdf": "https://aistudiocdn.com/jspdf@^3.0.3"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
